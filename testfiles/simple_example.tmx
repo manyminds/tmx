@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="24" height="24" tilewidth="32" tileheight="32" backgroundcolor="#248026" nextobjectid="1">
+ <tileset firstgid="1" name="chipset" tilewidth="32" tileheight="32" tilecount="500">
+  <image source="chipset.png" width="320" height="1600"/>
+  <tile id="0">
+   <properties>
+    <property name="sound" value="on"/>
+   </properties>
+  </tile>
+  <tile id="1">
+   <properties>
+    <property name="sound" value="off"/>
+   </properties>
+  </tile>
+ </tileset>
+ <tileset firstgid="501" name="chipset-copy" tilewidth="32" tileheight="32" tilecount="500">
+  <image source="chipset.png" width="320" height="1600"/>
+ </tileset>
+ <layer name="Floor" width="24" height="24">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA2NkYGBgogJmxIGpYTY9zMdlz1AzH92OoWg+Ex3MH8WjeBSP4lE8uDGt6xgAXVU7nwAJAAA=
+  </data>
+ </layer>
+ <layer name="Below" width="24" height="24">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA2NgoBxwU8EMQubT0g5uNExLQGvzRwHtADDuFkDpA1A6AUqPglEwCkbBKBhiAAAugVQ9AAkAAA==
+  </data>
+ </layer>
+ <layer name="Above" width="24" height="24">
+  <data encoding="base64" compression="gzip">
+   H4sIAAAAAAAAA2NgGAWjYBSMglEwmMF/RgQmh0+sHdjY2Pi4xEgxHxsfnxtINZ9cNcSaTyi8STV/FNAfAABWo7APAAkAAA==
+  </data>
+ </layer>
+</map>
