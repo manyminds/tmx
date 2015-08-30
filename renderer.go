@@ -2,28 +2,21 @@ package tmx
 
 import (
 	"image"
-	"os"
 	"path/filepath"
 
 	"github.com/disintegration/imaging"
-
-	//import for gif support
-	_ "image/gif"
-	//import for jpeg support
-	_ "image/jpeg"
-	//import for png support
-	_ "image/png"
 )
 
 //Renderer renders a tmx to the given canvas
 type Renderer struct {
 	canvas Canvas
 	m      Map
+	loader ResourceLocator
 }
 
 //NewRendererWithCanvas lets you draw the map on a custom canvas
 func NewRendererWithCanvas(m Map, c Canvas) *Renderer {
-	return &Renderer{m: m, canvas: c}
+	return &Renderer{m: m, canvas: c, loader: FilesystemLocator{}}
 }
 
 //Render will generate a preview image of the tmx map provided
@@ -52,7 +45,7 @@ func (t *tilemap) renderLayer(r Renderer) error {
 	for _, tileset := range t.subject.Tilesets {
 		path := tileset.Image.Source
 
-		tileset, err := loadImage(filepath.Clean(t.subject.filename + path))
+		tileset, err := r.loader.LoadResource(filepath.Clean(t.subject.filename + path))
 
 		if err != nil {
 			return err
@@ -117,14 +110,4 @@ func (t *tilemap) renderLayer(r Renderer) error {
 	}
 
 	return nil
-}
-
-func loadImage(src string) (image.Image, error) {
-	file, err := os.Open(src)
-	if err != nil {
-		return nil, err
-	}
-
-	data, _, err := image.Decode(file)
-	return data, err
 }
