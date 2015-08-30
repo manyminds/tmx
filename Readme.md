@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/manyminds/tmx.svg?branch=master)](https://travis-ci.org/manyminds/tmx)
+
 # TMX Map File Loader
 
 This repository aims to provide go support for maps that are saved according the the [http://doc.mapeditor.org/reference/tmx-map-format](TMX Map Format).
