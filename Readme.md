@@ -27,7 +27,10 @@ To generate a preview image of your tilemap you can use the Render function:
     log.Fatal(err)
   }
 
-  img, err := tmx.Render(*m)
+  canvas := tmx.NewImageCanvasFromMap(*m)
+
+  renderer := tmx.NewRendererWithCanvas(*m, canvas)
+  err = renderer.Render()
   if err != nil {
     log.Fatal(err)
   }
@@ -40,7 +43,7 @@ To generate a preview image of your tilemap you can use the Render function:
     }
   }
 
-  err = png.Encode(target, img)
+  err = png.Encode(target, canvas.Image())
   if err != nil {
     log.Fatal(err)
   }

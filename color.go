@@ -2,7 +2,7 @@ package tmx
 
 import "strconv"
 
-type color string
+type hexcolor string
 
 //Tiled uses this defaults when no background color
 //was set
@@ -14,7 +14,7 @@ const (
 )
 
 //implement image.Color interface
-func (c color) RGBA() (r, g, b, a uint32) {
+func (c hexcolor) RGBA() (r, g, b, a uint32) {
 	if c == "" {
 		return defaultRed, defaultBlue, defaultGreen, defaultAlpha
 	}

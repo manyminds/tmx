@@ -7,7 +7,6 @@ import (
 
 	"github.com/disintegration/imaging"
 
-	"image/draw"
 	//import for gif support
 	_ "image/gif"
 	//import for jpeg support
@@ -16,40 +15,40 @@ import (
 	_ "image/png"
 )
 
-//Render will generate a preview image of the tmx map provided
-func Render(m Map) (*image.RGBA, error) {
-	bounds := image.Rect(0, 0, m.Width*m.TileWidth, m.Height*m.TileHeight)
-	target := image.NewRGBA(bounds)
+//Renderer renders a tmx to the given canvas
+type Renderer struct {
+	canvas Canvas
+	m      Map
+}
 
-	canvas := tilemap{subject: m, canvas: target, tilesets: map[string]image.Image{}}
-	canvas.renderBackground()
-	err := canvas.renderLayer()
+//NewRendererWithCanvas lets you draw the map on a custom canvas
+func NewRendererWithCanvas(m Map, c Canvas) *Renderer {
+	return &Renderer{m: m, canvas: c}
+}
+
+//Render will generate a preview image of the tmx map provided
+func (r Renderer) Render() error {
+	canvas := tilemap{subject: r.m, tilesets: map[string]image.Image{}}
+	canvas.renderBackground(r)
+	err := canvas.renderLayer(r)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	return canvas.canvas, nil
+	return nil
 }
 
 type tilemap struct {
-	canvas   *image.RGBA
 	subject  Map
 	tilesets map[string]image.Image
 }
 
-func (t tilemap) renderBackground() {
+func (t tilemap) renderBackground(r Renderer) {
 	color := t.subject.BackgroundColor
-
-	draw.Draw(
-		t.canvas,
-		t.canvas.Rect,
-		&image.Uniform{color},
-		image.ZP,
-		draw.Src,
-	)
+	r.canvas.FillRect(color, r.canvas.Bounds())
 }
 
-func (t *tilemap) renderLayer() error {
+func (t *tilemap) renderLayer(r Renderer) error {
 	for _, tileset := range t.subject.Tilesets {
 		path := tileset.Image.Source
 
@@ -113,13 +112,7 @@ func (t *tilemap) renderLayer() error {
 
 			bounds := image.Rect(x, y, x+t.subject.TileWidth, y+t.subject.TileWidth)
 
-			draw.Draw(
-				t.canvas,
-				bounds,
-				tile,
-				tile.Bounds().Min,
-				draw.Over,
-			)
+			r.canvas.Draw(tile, bounds)
 		}
 	}
 
