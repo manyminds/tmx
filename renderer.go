@@ -14,9 +14,15 @@ type Renderer struct {
 	loader ResourceLocator
 }
 
-//NewRendererWithCanvas lets you draw the map on a custom canvas
-func NewRendererWithCanvas(m Map, c Canvas) *Renderer {
-	return &Renderer{m: m, canvas: c, loader: FilesystemLocator{}}
+//NewRenderer lets you draw the map on a custom canvas
+//with a default FilesystemLocator
+func NewRenderer(m Map, c Canvas) *Renderer {
+	return NewRendererWithResourceLocator(m, c, FilesystemLocator{})
+}
+
+//NewRendererWithResourceLocator return a new renderer
+func NewRendererWithResourceLocator(m Map, c Canvas, locator ResourceLocator) *Renderer {
+	return &Renderer{m: m, canvas: c, loader: locator}
 }
 
 //Render will generate a preview image of the tmx map provided
