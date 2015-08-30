@@ -4,12 +4,9 @@ import (
 	"image"
 	"os"
 	"path/filepath"
-	"strconv"
-	"strings"
 
 	"github.com/disintegration/imaging"
 
-	"image/color"
 	"image/draw"
 	//import for gif support
 	_ "image/gif"
@@ -41,7 +38,7 @@ type tilemap struct {
 }
 
 func (t tilemap) renderBackground() {
-	color := getBackgroundColor(t.subject.BackgroundColor)
+	color := t.subject.BackgroundColor
 
 	draw.Draw(
 		t.canvas,
@@ -127,36 +124,6 @@ func (t *tilemap) renderLayer() error {
 	}
 
 	return nil
-}
-
-func getBackgroundColor(background string) color.RGBA {
-	d := color.RGBA{128, 128, 128, 255}
-	if background == "" {
-		return d
-	}
-
-	data := []byte(strings.ToLower(background))[1:]
-
-	if len(data) != 6 {
-		return d
-	}
-
-	r, err := strconv.ParseInt(string(data[0:2]), 16, 0)
-	if err != nil {
-		return d
-	}
-
-	g, err := strconv.ParseInt(string(data[2:4]), 16, 0)
-	if err != nil {
-		return d
-	}
-
-	b, err := strconv.ParseInt(string(data[4:6]), 16, 0)
-	if err != nil {
-		return d
-	}
-
-	return color.RGBA{uint8(r), uint8(g), uint8(b), 255}
 }
 
 func loadImage(src string) (image.Image, error) {

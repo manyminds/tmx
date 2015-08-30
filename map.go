@@ -17,7 +17,7 @@ type Map struct {
 	Height          int           `xml:"height,attr"`
 	TileWidth       int           `xml:"tilewidth,attr"`
 	TileHeight      int           `xml:"tileheight,attr"`
-	BackgroundColor string        `xml:"backgroundcolor,attr"`
+	BackgroundColor color         `xml:"backgroundcolor,attr"`
 	RenderOrder     string        `xml:"renderorder,attr"`
 	Properties      []Property    `xml:"properties>property"`
 	Tilesets        []Tileset     `xml:"tileset"`

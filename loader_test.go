@@ -67,7 +67,7 @@ var _ = Describe("Loader", func() {
 			Expect(target.Tilesets).To(HaveLen(2))
 			tileSet := target.Tilesets[0]
 
-			Expect(target.BackgroundColor).To(Equal("#248026"))
+			Expect(string(target.BackgroundColor)).To(Equal("#248026"))
 			Expect(target.Orientation).To(Equal("orthogonal"))
 			Expect(target.Layers).To(HaveLen(3))
 
