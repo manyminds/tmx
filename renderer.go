@@ -7,8 +7,13 @@ import (
 	"github.com/disintegration/imaging"
 )
 
-//Renderer renders a tmx to the given canvas
-type Renderer struct {
+//Renderer renders
+//the given Map on a provided Canvas
+type Renderer interface {
+	Render() error
+}
+
+type fullRenderer struct {
 	canvas Canvas
 	m      Map
 	loader ResourceLocator
@@ -16,17 +21,17 @@ type Renderer struct {
 
 //NewRenderer lets you draw the map on a custom canvas
 //with a default FilesystemLocator
-func NewRenderer(m Map, c Canvas) *Renderer {
+func NewRenderer(m Map, c Canvas) Renderer {
 	return NewRendererWithResourceLocator(m, c, FilesystemLocator{})
 }
 
 //NewRendererWithResourceLocator return a new renderer
-func NewRendererWithResourceLocator(m Map, c Canvas, locator ResourceLocator) *Renderer {
-	return &Renderer{m: m, canvas: c, loader: locator}
+func NewRendererWithResourceLocator(m Map, c Canvas, locator ResourceLocator) Renderer {
+	return &fullRenderer{m: m, canvas: c, loader: locator}
 }
 
 //Render will generate a preview image of the tmx map provided
-func (r Renderer) Render() error {
+func (r fullRenderer) Render() error {
 	canvas := tilemap{subject: r.m, tilesets: map[string]image.Image{}}
 	canvas.renderBackground(r)
 	err := canvas.renderLayer(r)
@@ -42,16 +47,16 @@ type tilemap struct {
 	tilesets map[string]image.Image
 }
 
-func (t tilemap) renderBackground(r Renderer) {
+func (t tilemap) renderBackground(r fullRenderer) {
 	color := t.subject.BackgroundColor
 	r.canvas.FillRect(color, r.canvas.Bounds())
 }
 
-func (t *tilemap) renderLayer(r Renderer) error {
+func (t *tilemap) renderLayer(r fullRenderer) error {
 	for _, tileset := range t.subject.Tilesets {
 		path := tileset.Image.Source
 
-		tileset, err := r.loader.LoadResource(filepath.Clean(t.subject.filename + path))
+		tileset, err := r.loader.LocateResource(filepath.Clean(t.subject.filename + path))
 
 		if err != nil {
 			return err

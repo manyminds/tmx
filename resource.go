@@ -15,7 +15,7 @@ import (
 //ResourceLocator can be implemented to
 //load resources differently than from filesystem
 type ResourceLocator interface {
-	LoadResource(filepath string) (image.Image, error)
+	LocateResource(filepath string) (image.Image, error)
 }
 
 //FilesystemLocator loads files simply from the filesystem
@@ -23,8 +23,8 @@ type ResourceLocator interface {
 type FilesystemLocator struct {
 }
 
-//LoadResource to implement ResourceLocator interface
-func (f FilesystemLocator) LoadResource(filepath string) (image.Image, error) {
+//LocateResource to implement ResourceLocator interface
+func (f FilesystemLocator) LocateResource(filepath string) (image.Image, error) {
 	file, err := os.Open(filepath)
 	if err != nil {
 		return nil, err
