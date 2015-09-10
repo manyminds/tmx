@@ -12,30 +12,28 @@ import (
 
 var _ = Describe("Test public renderer", func() {
 	Context("Test render", func() {
-		var (
-			testMap *Map
-			c       Canvas
-		)
-
-		BeforeEach(func() {
-			f, err := os.Open("./testfiles/simple_example.tmx")
+		validateMapWithImage := func(mapFile, imageFile string) {
+			f, err := os.Open(mapFile)
 			Expect(err).ToNot(HaveOccurred())
-			testMap, err = NewMap(f)
+			testMap, err := NewMap(f)
 			Expect(err).ToNot(HaveOccurred())
-			c = NewImageCanvasFromMap(*testMap)
-		})
-
-		It("should render all layers", func() {
+			c := NewImageCanvasFromMap(*testMap)
 			renderer := NewRenderer(*testMap, c)
-			err := renderer.Render()
+			err = renderer.Render()
 			Expect(err).ToNot(HaveOccurred())
-			f, err := os.Open("./testfiles/simple_example_expected.png")
+			f, err = os.Open(imageFile)
 			Expect(err).ToNot(HaveOccurred())
 			expected, err := png.Decode(f)
 			Expect(err).ToNot(HaveOccurred())
-			ic, ok := c.(*ImageCanvas)
-			Expect(ok).To(Equal(true), "invalid type")
-			Expect(expected).To(EqualImage(ic.Image()))
+			Expect(expected).To(EqualImage(c.Image()))
+		}
+
+		It("should render all layers when visible gzip", func() {
+			validateMapWithImage("./testfiles/simple_example.tmx", "./testfiles/simple_example_expected.png")
+		})
+
+		It("should render only visible images zlib", func() {
+			validateMapWithImage("./testfiles/simple_example_zlib.tmx", "./testfiles/simple_example_zlib_expected.png")
 		})
 	})
 })
