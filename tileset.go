@@ -1,6 +1,6 @@
 package tmx
 
-// Tileset entry describes a complete  tileset
+// Tileset entry describes a complete tileset
 type Tileset struct {
 	FirstGID   GID        `xml:"firstgid,attr"`
 	Source     string     `xml:"source,attr"`

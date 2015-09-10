@@ -94,8 +94,7 @@ func (t *tilemap) renderLayer(r Renderer) error {
 			tile := ptileset.SubImage(tileBounds)
 
 			if dt.DiagonalFlip {
-				tile = imaging.Rotate270(tile)
-				tile = imaging.FlipH(tile)
+				tile = imaging.FlipH(imaging.Rotate270(tile))
 			}
 
 			if dt.HorizontalFlip {
