@@ -9,7 +9,11 @@ sudo: false
 
 install: 
   - go get -t -d -v ./...
-  - go get github.com/onsi/ginkgo/ginkgo
+  - go get -u github.com/onsi/ginkgo/ginkgo
+  - go get -u github.com/modocache/gover
+  - go get -u github.com/mattn/goveralls
 
 script:
-  - ginkgo -r --randomizeAllSpecs --randomizeSuites --failOnPending --trace --race --progress
+  - ginkgo -r -cover --randomizeAllSpecs --randomizeSuites --failOnPending --trace --race --progress
+  - gover
+  - goveralls -coverprofile=gover.coverprofile -repotoken nnbCGE2FA2EASedINlurUhZNRjFzwewQp
