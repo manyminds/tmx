@@ -15,10 +15,6 @@ const (
 
 //implement image.Color interface
 func (c hexcolor) RGBA() (r, g, b, a uint32) {
-	if c == "" {
-		return defaultRed, defaultBlue, defaultGreen, defaultAlpha
-	}
-
 	data := []byte(string(c))
 	if len(data) == 0 {
 		return defaultRed, defaultBlue, defaultGreen, defaultAlpha

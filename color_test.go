@@ -17,8 +17,49 @@ var _ = Describe("Test Background Color parsing", func() {
 			Expect(b).To(Equal(uint32(128)))
 			Expect(a).To(Equal(uint32(255)))
 		})
+
+		It("Should be default if too long", func() {
+			m := Map{BackgroundColor: "thisisnocolor"}
+
+			r, g, b, a := m.BackgroundColor.RGBA()
+			Expect(r).To(Equal(uint32(128)))
+			Expect(g).To(Equal(uint32(128)))
+			Expect(b).To(Equal(uint32(128)))
+			Expect(a).To(Equal(uint32(255)))
+		})
+
 		It("Should be default if invalid", func() {
 			m := Map{BackgroundColor: "nocolor"}
+
+			r, g, b, a := m.BackgroundColor.RGBA()
+			Expect(r).To(Equal(uint32(128)))
+			Expect(g).To(Equal(uint32(128)))
+			Expect(b).To(Equal(uint32(128)))
+			Expect(a).To(Equal(uint32(255)))
+		})
+
+		It("will default if it fails to decode red", func() {
+			m := Map{BackgroundColor: "fgaaaa"}
+
+			r, g, b, a := m.BackgroundColor.RGBA()
+			Expect(r).To(Equal(uint32(128)))
+			Expect(g).To(Equal(uint32(128)))
+			Expect(b).To(Equal(uint32(128)))
+			Expect(a).To(Equal(uint32(255)))
+		})
+
+		It("will default if it fails to decode green", func() {
+			m := Map{BackgroundColor: "faagaa"}
+
+			r, g, b, a := m.BackgroundColor.RGBA()
+			Expect(r).To(Equal(uint32(128)))
+			Expect(g).To(Equal(uint32(128)))
+			Expect(b).To(Equal(uint32(128)))
+			Expect(a).To(Equal(uint32(255)))
+		})
+
+		It("will default if it fails to decode blue", func() {
+			m := Map{BackgroundColor: "faaaga"}
 
 			r, g, b, a := m.BackgroundColor.RGBA()
 			Expect(r).To(Equal(uint32(128)))
