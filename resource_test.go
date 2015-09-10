@@ -30,5 +30,11 @@ var _ = Describe("Test public api", func() {
 			_, ok := loader.(ResourceLocator)
 			Expect(ok).To(Equal(true))
 		})
+
+		It("will error on invalid resource", func() {
+			loader := FilesystemLocator{}
+			_, err := loader.LocateResource("/null")
+			Expect(err).To(HaveOccurred())
+		})
 	})
 })
