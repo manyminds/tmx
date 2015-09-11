@@ -1,4 +1,4 @@
-package tmx
+package spec
 
 // Tileset entry describes a complete tileset
 type Tileset struct {

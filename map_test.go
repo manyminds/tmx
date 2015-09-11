@@ -2,6 +2,7 @@ package tmx_test
 
 import (
 	. "github.com/manyminds/tmx"
+	"github.com/manyminds/tmx/spec"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -10,27 +11,27 @@ var _ = Describe("Tests for map", func() {
 
 	Context("Test map utility methods", func() {
 		var testMap Map
-		var miniTileset Tileset
-		var giantTileset Tileset
+		var miniTileset spec.Tileset
+		var giantTileset spec.Tileset
 
 		BeforeEach(func() {
-			miniImage := Image{Width: 320, Height: 320}
-			miniTileset = Tileset{
+			miniImage := spec.Image{Width: 320, Height: 320}
+			miniTileset = spec.Tileset{
 				FirstGID:   1,
 				TileWidth:  32,
 				TileHeight: 32,
 				Image:      miniImage,
 			}
 
-			giantImage := Image{Width: 16000, Height: 16000}
-			giantTileset = Tileset{
-				FirstGID:   GID(miniTileset.GetNumTiles()),
+			giantImage := spec.Image{Width: 16000, Height: 16000}
+			giantTileset = spec.Tileset{
+				FirstGID:   spec.GID(miniTileset.GetNumTiles()),
 				TileWidth:  32,
 				TileHeight: 32,
 				Image:      giantImage,
 			}
 
-			testMap = Map{Tilesets: []Tileset{miniTileset, giantTileset}}
+			testMap = Map{Tilesets: []spec.Tileset{miniTileset, giantTileset}}
 		})
 
 		It("should return no tileset for 0", func() {
