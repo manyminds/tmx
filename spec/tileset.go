@@ -2,11 +2,11 @@ package spec
 
 // Tileset entry describes a complete tileset
 type Tileset struct {
-	FirstGID   GID        `xml:"firstgid,attr"`
+	FirstGID   GID        `validate:"gt=0" xml:"firstgid,attr"`
 	Source     string     `xml:"source,attr"`
 	Name       string     `xml:"name,attr"`
-	TileWidth  int        `xml:"tilewidth,attr"`
-	TileHeight int        `xml:"tileheight,attr"`
+	TileWidth  int        `validate:"gt=0" xml:"tilewidth,attr"`
+	TileHeight int        `validate:"gt=0" xml:"tileheight,attr"`
 	Spacing    int        `xml:"spacing,attr"`
 	Margin     int        `xml:"margin,attr"`
 	Properties []Property `xml:"properties>property"`
@@ -42,8 +42,8 @@ func (t Tileset) GetNumTilesY() int {
 type Image struct {
 	Source string `xml:"source,attr"`
 	Trans  string `xml:"trans,attr"`
-	Width  int    `xml:"width,attr"`
-	Height int    `xml:"height,attr"`
+	Width  int    `validate:"gt=0" xml:"width,attr"`
+	Height int    `validate:"gt=0" xml:"height,attr"`
 }
 
 // Tile refers to one tile in the tileset

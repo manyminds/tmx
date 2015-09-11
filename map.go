@@ -8,6 +8,8 @@ import (
 	"os"
 	"path/filepath"
 
+	validator "gopkg.in/bluesuncorp/validator.v8"
+
 	"github.com/manyminds/tmx/spec"
 )
 
@@ -15,11 +17,11 @@ import (
 type Map struct {
 	Version         string             `xml:"title,attr"`
 	Orientation     string             `xml:"orientation,attr"`
-	Width           int                `xml:"width,attr"`
-	Height          int                `xml:"height,attr"`
-	TileWidth       int                `xml:"tilewidth,attr"`
-	TileHeight      int                `xml:"tileheight,attr"`
-	BackgroundColor hexcolor           `xml:"backgroundcolor,attr"`
+	Width           int                `validate:"gt=0" xml:"width,attr"`
+	Height          int                `validate:"gt=0" xml:"height,attr"`
+	TileWidth       int                `validate:"gt=0" xml:"tilewidth,attr"`
+	TileHeight      int                `validate:"gt=0" xml:"tileheight,attr"`
+	BackgroundColor hexcolor           `validate:"omitempty,rgb|hexcolor" xml:"backgroundcolor,attr"`
 	RenderOrder     string             `xml:"renderorder,attr"`
 	Properties      []spec.Property    `xml:"properties>property"`
 	Tilesets        []spec.Tileset     `xml:"tileset"`
@@ -47,6 +49,15 @@ func (m Map) GetTilesetForGID(gid spec.GID) (*spec.Tileset, error) {
 
 // NewMap creates a new map from a given io.Reader
 func NewMap(f io.Reader) (*Map, error) {
+	return NewMapWithValidation(f, true)
+}
+
+//NewMapWithValidation lets you create a map and decide
+//wether you want to validate it, or skip validation
+//and risk potential errors
+//this is particulary useful if you want to skip validation
+//during runtime for performance benefits
+func NewMapWithValidation(f io.Reader, validation bool) (*Map, error) {
 	var target Map
 	data, err := ioutil.ReadAll(f)
 	if err != nil {
@@ -63,6 +74,13 @@ func NewMap(f io.Reader) (*Map, error) {
 		return nil, err
 	}
 
+	if validation {
+		err = target.Validate()
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	target.filename = filename
 
 	for key, layer := range target.Layers {
@@ -74,4 +92,11 @@ func NewMap(f io.Reader) (*Map, error) {
 	}
 
 	return &target, nil
+}
+
+//Validate will semantically validate the given map
+func (m Map) Validate() error {
+	v := validator.New(&validator.Config{TagName: "validate"})
+
+	return v.Struct(m)
 }

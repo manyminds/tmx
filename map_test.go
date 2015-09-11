@@ -31,7 +31,18 @@ var _ = Describe("Tests for map", func() {
 				Image:      giantImage,
 			}
 
-			testMap = Map{Tilesets: []spec.Tileset{miniTileset, giantTileset}}
+			testMap = Map{
+				Tilesets:   []spec.Tileset{miniTileset, giantTileset},
+				TileHeight: 32,
+				TileWidth:  32,
+				Width:      10,
+				Height:     10,
+			}
+		})
+
+		It("Should be a valid map", func() {
+			err := testMap.Validate()
+			Expect(err).ToNot(HaveOccurred())
 		})
 
 		It("should return no tileset for 0", func() {
