@@ -7,10 +7,22 @@ import (
 	"github.com/disintegration/imaging"
 )
 
+//RenderOption defines options for the renderer
+type RenderOption uint16
+
+const (
+	//RenderBackground must be set if you want the tilemaps background to be rendered
+	RenderBackground RenderOption = 1
+	//RenderLayer must be set if you want to render all tile layer
+	RenderLayer RenderOption = 2
+	//RenderFull can be set to render everything
+	RenderFull RenderOption = 65535
+)
+
 //Renderer renders
 //the given Map on a provided Canvas
 type Renderer interface {
-	Render() error
+	Render(options RenderOption) error
 }
 
 type fullRenderer struct {
@@ -31,12 +43,18 @@ func NewRendererWithResourceLocator(m Map, c Canvas, locator ResourceLocator) Re
 }
 
 //Render will generate a preview image of the tmx map provided
-func (r fullRenderer) Render() error {
+func (r fullRenderer) Render(options RenderOption) error {
 	canvas := tilemap{subject: r.m, tilesets: map[string]image.Image{}}
-	canvas.renderBackground(r)
-	err := canvas.renderLayer(r)
-	if err != nil {
-		return err
+
+	if options&0x1 > 0 {
+		canvas.renderBackground(r)
+	}
+
+	if options&0x2 > 0 {
+		err := canvas.renderLayer(r)
+		if err != nil {
+			return err
+		}
 	}
 
 	return nil

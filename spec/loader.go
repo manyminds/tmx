@@ -1,6 +1,7 @@
-// Package tmx provides an TMX file loader
-// specification: http://doc.mapeditor.org/reference/tmx-map-format/
-package tmx
+// Package spec contains all structs necessary to unmarshal
+// tmx map files. You can read the
+// specification at http://doc.mapeditor.org/reference/tmx-map-format/
+package spec
 
 import "encoding/xml"
 

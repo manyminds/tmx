@@ -19,7 +19,7 @@ var _ = Describe("Test public renderer", func() {
 			Expect(err).ToNot(HaveOccurred())
 			c := NewImageCanvasFromMap(*testMap)
 			renderer := NewRenderer(*testMap, c)
-			err = renderer.Render()
+			err = renderer.Render(RenderFull)
 			Expect(err).ToNot(HaveOccurred())
 			f, err = os.Open(imageFile)
 			Expect(err).ToNot(HaveOccurred())

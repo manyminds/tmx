@@ -4,6 +4,7 @@ import (
 	"os"
 
 	. "github.com/manyminds/tmx"
+	"github.com/manyminds/tmx/spec"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
@@ -74,14 +75,14 @@ var _ = Describe("Loader", func() {
 			Expect(target.Height).To(Equal(24))
 			Expect(target.Width).To(Equal(24))
 			Expect(target.RenderOrder).To(Equal("right-down"))
-			Expect(tileSet.FirstGID).To(Equal(GID(1)))
+			Expect(tileSet.FirstGID).To(Equal(spec.GID(1)))
 			Expect(tileSet.Name).To(Equal("chipset"))
 			Expect(tileSet.TileHeight).To(Equal(32))
 			Expect(tileSet.TileWidth).To(Equal(32))
 			Expect(tileSet.Spacing).To(Equal(0))
 			Expect(tileSet.Margin).To(Equal(0))
 
-			//Tiles are only stores for tiles with specific information
+			//Tiles are only stores for tiles with specific inspecion
 			//such as custom propertys
 			//or animations
 			Expect(tileSet.Tiles).To(HaveLen(2))

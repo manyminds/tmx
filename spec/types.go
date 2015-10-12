@@ -1,4 +1,4 @@
-package tmx
+package spec
 
 import (
 	"bytes"
@@ -33,9 +33,9 @@ func isDiagonallyFlipped(gid GID) bool {
 	return gid&GIDDiagonalFlip != 0
 }
 
-// loadEncodedTiles loads all GID informations
+// LoadEncodedTiles loads all GID informations
 // from RawData to `DataTiles`
-func (d *Data) loadEncodedTiles() error {
+func (d *Data) LoadEncodedTiles() error {
 	if len(d.RawData) == 0 {
 		return nil
 	}
