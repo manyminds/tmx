@@ -47,6 +47,10 @@ type tilemap struct {
 	tilesets map[string]image.Image
 }
 
+type subImager interface {
+	SubImage(r image.Rectangle) image.Image
+}
+
 func (t tilemap) renderBackground(r fullRenderer) {
 	color := t.subject.BackgroundColor
 	r.canvas.FillRect(color, r.canvas.Bounds())
@@ -90,7 +94,7 @@ func (t *tilemap) renderLayer(r fullRenderer) error {
 				panic("invalid tileset path")
 			}
 
-			ptileset, ok := tilesetgfx.(*image.Paletted)
+			ptileset, ok := tilesetgfx.(subImager)
 			if !ok {
 				panic("invalid image type given")
 			}
