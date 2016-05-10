@@ -14,6 +14,17 @@ type Tileset struct {
 	Tiles      []Tile     `xml:"tile"`
 }
 
+//GetTileByID returns special tile information
+func (t Tileset) GetTileByID(tileID uint32) *Tile {
+	for _, t := range t.Tiles {
+		if t.ID == tileID {
+			return &t
+		}
+	}
+
+	return nil
+}
+
 //GetFilename returns the filename for this tileset
 func (t Tileset) GetFilename() string {
 	if t.Source != "" {
@@ -48,6 +59,54 @@ type Image struct {
 
 // Tile refers to one tile in the tileset
 type Tile struct {
-	ID    uint32 `xml:"id,attr"`
-	Image Image  `xml:"image"`
+	ID        uint32     `xml:"id,attr"`
+	Image     Image      `xml:"image"`
+	Animation *Animation `xml:"animation"`
+}
+
+//Animation references an animated tile
+type Animation struct {
+	Frames        []*Frame `xml:"frame"`
+	animationTime int64
+	totalDuration int64
+	currentFrame  int
+}
+
+//GetFrame returns the frame that will be drawn
+func (a Animation) GetFrame() *Frame {
+	if len(a.Frames) == 0 {
+		return nil
+	}
+
+	return a.Frames[a.currentFrame]
+}
+
+//Update the animation with elapsedTime since last update
+func (a *Animation) Update(elapsedTime int64) {
+	if a.totalDuration == 0 {
+		for i, f := range a.Frames {
+			a.totalDuration += f.Duration
+			a.Frames[i].endTime = a.totalDuration
+		}
+	}
+
+	if len(a.Frames) > 1 {
+		a.animationTime += elapsedTime
+		if a.animationTime >= a.totalDuration {
+			a.animationTime = a.animationTime % a.totalDuration
+			a.currentFrame = 0
+		}
+
+		for a.animationTime >= a.GetFrame().endTime {
+			a.currentFrame++
+		}
+	}
+}
+
+//Frame is one frame of an animation
+type Frame struct {
+	//Duration is given in milliseconds
+	Duration int64 `xml:"duration,attr"`
+	TileID   int   `xml:"tileid,attr"`
+	endTime  int64
 }

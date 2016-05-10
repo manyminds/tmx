@@ -112,4 +112,53 @@ var _ = Describe("Loader", func() {
 			Expect(aboveLayer.IsVisible()).To(Equal(true))
 		})
 	})
+
+	It("Loads maps with animations", func() {
+		testfile := "testfiles/animated_example_zlib.tmx"
+		file, err := os.Open(testfile)
+		Expect(err).ToNot(HaveOccurred())
+		defer file.Close()
+
+		target, err := NewMap(file)
+		Expect(err).ToNot(HaveOccurred())
+		Expect(target.Tilesets).To(HaveLen(1))
+		tileset := target.Tilesets[0]
+		Expect(tileset.Tiles).To(HaveLen(1))
+		tile := tileset.Tiles[0]
+		Expect(tile.Animation.Frames).To(HaveLen(4))
+		for _, t := range tile.Animation.Frames {
+			Expect(t.TileID).ToNot(Equal(0))
+			Expect(t.Duration).ToNot(Equal(0))
+		}
+
+		frame := tile.Animation.GetFrame()
+		Expect(frame).ToNot(BeNil())
+		Expect(frame.TileID).To(Equal(3))
+		tile.Animation.Update(99)
+
+		frame = tile.Animation.GetFrame()
+		Expect(frame).ToNot(BeNil())
+		Expect(frame.TileID).To(Equal(3))
+		tile.Animation.Update(2)
+
+		frame = tile.Animation.GetFrame()
+		Expect(frame).ToNot(BeNil())
+		Expect(frame.TileID).To(Equal(1))
+		tile.Animation.Update(100)
+
+		frame = tile.Animation.GetFrame()
+		Expect(frame).ToNot(BeNil())
+		Expect(frame.TileID).To(Equal(2))
+		tile.Animation.Update(100)
+
+		frame = tile.Animation.GetFrame()
+		Expect(frame).ToNot(BeNil())
+		Expect(frame.TileID).To(Equal(10))
+
+		tile.Animation.Update(100)
+
+		frame = tile.Animation.GetFrame()
+		Expect(frame).ToNot(BeNil())
+		Expect(frame.TileID).To(Equal(3))
+	})
 })

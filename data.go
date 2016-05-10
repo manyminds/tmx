@@ -98,8 +98,10 @@ func decompress(r io.Reader, compression string) (data []byte, err error) {
 		if err != nil {
 			return
 		}
+	case "":
+		compressionReader = r
 	default:
-		err = errors.New("Only zlip and gzip compressions are supported")
+		err = errors.New("Only zlib and gzip compressions are supported")
 		return
 	}
 

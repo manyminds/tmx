@@ -1,6 +1,7 @@
 package tmx
 
 import (
+	"errors"
 	"image"
 	"path/filepath"
 )
@@ -16,6 +17,7 @@ type fullRenderer struct {
 	m      Map
 	loader ResourceLocator
 	tf     TileFlipper
+	timer  *timer
 }
 
 //NewRenderer lets you draw the map on a custom canvas
@@ -37,17 +39,22 @@ func NewRendererWithResourceLocatorAndTileFlipper(
 	locator ResourceLocator,
 	tf TileFlipper,
 ) Renderer {
-	return &fullRenderer{m: m, canvas: c, loader: locator, tf: tf}
+	t := createTimer()
+	t.Start()
+	return &fullRenderer{m: m, canvas: c, loader: locator, tf: tf, timer: t}
 }
 
 //Render will generate a preview image of the tmx map provided
-func (r fullRenderer) Render() error {
+func (r *fullRenderer) Render() error {
+	elapsed := r.timer.GetElapsedTime() / (1000 * 1000)
 	canvas := tilemap{subject: r.m}
 	canvas.renderBackground(r)
+	canvas.updateIdentities(elapsed)
 	err := canvas.renderLayer(r)
 	if err != nil {
 		return err
 	}
+	r.timer.UpdateTime()
 
 	return nil
 }
@@ -60,12 +67,22 @@ type subImager interface {
 	SubImage(r image.Rectangle) image.Image
 }
 
-func (t tilemap) renderBackground(r fullRenderer) {
+func (t tilemap) renderBackground(r *fullRenderer) {
 	color := t.subject.BackgroundColor
 	r.canvas.FillRect(color, r.canvas.Bounds())
 }
 
-func (t *tilemap) renderLayer(r fullRenderer) error {
+func (t *tilemap) updateIdentities(elapsedTime int64) {
+	for i, ts := range t.subject.Tilesets {
+		for j, tile := range ts.Tiles {
+			if tile.Animation != nil {
+				t.subject.Tilesets[i].Tiles[j].Animation.Update(elapsedTime)
+			}
+		}
+	}
+}
+
+func (t *tilemap) renderLayer(r *fullRenderer) error {
 	for _, l := range t.subject.Layers {
 		if !l.IsVisible() {
 			continue
@@ -81,42 +98,53 @@ func (t *tilemap) renderLayer(r fullRenderer) error {
 				continue
 			}
 
-			tx := int(dt.GID-tileset.FirstGID) % tileset.GetNumTilesX()
-			ty := int(dt.GID-tileset.FirstGID) / tileset.GetNumTilesX()
+			tileID := int(dt.GID - tileset.FirstGID)
+			tile := tileset.GetTileByID(uint32(tileID))
+			if tile != nil {
+				if tile.Animation != nil {
+					tileID = tile.Animation.GetFrame().TileID
+				}
+			}
+
+			tx := tileID % tileset.GetNumTilesX()
+			ty := tileID / tileset.GetNumTilesX()
 			tx *= t.subject.TileWidth
 			ty *= t.subject.TileHeight
 
-			tilesetgfx, err := r.loader.LocateResource(filepath.Clean(t.subject.filename + tileset.Image.Source))
-			if err != nil {
-				panic("invalid tileset path")
-			}
-
-			ptileset, ok := tilesetgfx.(subImager)
-			if !ok {
-				panic("invalid image type given")
-			}
-
 			tileBounds := image.Rect(tx, ty, tx+t.subject.TileWidth, ty+t.subject.TileHeight)
-			tile := ptileset.SubImage(tileBounds)
-
-			if dt.DiagonalFlip {
-				tile = r.tf.FlipDiagonal(tile)
-			}
-
-			if dt.HorizontalFlip {
-				tile = r.tf.FlipHorizontal(tile)
-			}
-
-			if dt.VerticalFlip {
-				tile = r.tf.FlipVertical(tile)
-			}
-
 			x := (i % l.Width) * t.subject.TileWidth
-			y := (i / l.Height) * t.subject.TileHeight
+			y := (i / l.Width) * t.subject.TileHeight
 
 			bounds := image.Rect(x, y, x+t.subject.TileWidth, y+t.subject.TileWidth)
 
-			r.canvas.Draw(tile, bounds)
+			if relativeCanvas, ok := r.canvas.(RelativeCanvas); ok {
+				relativeCanvas.Draw(tileBounds, bounds, tileset.GetFilename())
+			} else if imgCanvas, ok := r.canvas.(ImageCanvas); ok {
+				tilesetgfx, err := r.loader.LocateResource(filepath.Clean(t.subject.filename + tileset.Image.Source))
+				if err != nil {
+					return errors.New("invalid tileset path")
+				}
+				ptileset, ok := tilesetgfx.(subImager)
+				if !ok {
+					return errors.New("invalid image type given")
+				}
+
+				tile := ptileset.SubImage(tileBounds)
+
+				if dt.DiagonalFlip {
+					tile = r.tf.FlipDiagonal(tile)
+				}
+
+				if dt.HorizontalFlip {
+					tile = r.tf.FlipHorizontal(tile)
+				}
+
+				if dt.VerticalFlip {
+					tile = r.tf.FlipVertical(tile)
+				}
+
+				imgCanvas.Draw(tile, bounds)
+			}
 		}
 	}
 

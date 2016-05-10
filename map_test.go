@@ -7,7 +7,6 @@ import (
 )
 
 var _ = Describe("Tests for map", func() {
-
 	Context("Test map utility methods", func() {
 		var testMap Map
 		var miniTileset Tileset
