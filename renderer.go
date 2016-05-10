@@ -22,7 +22,7 @@ type fullRenderer struct {
 //NewRenderer lets you draw the map on a custom canvas
 //with a default FilesystemLocator
 func NewRenderer(m Map, c Canvas) Renderer {
-	return NewRendererWithResourceLocator(m, c, FilesystemLocator{})
+	return NewRendererWithResourceLocator(m, c, NewLazyResourceLocator(FilesystemLocator{}))
 }
 
 //NewRendererWithResourceLocator return a new renderer
@@ -32,7 +32,7 @@ func NewRendererWithResourceLocator(m Map, c Canvas, locator ResourceLocator) Re
 
 //Render will generate a preview image of the tmx map provided
 func (r fullRenderer) Render() error {
-	canvas := tilemap{subject: r.m, tilesets: map[string]image.Image{}}
+	canvas := tilemap{subject: r.m}
 	canvas.renderBackground(r)
 	err := canvas.renderLayer(r)
 	if err != nil {
@@ -43,8 +43,7 @@ func (r fullRenderer) Render() error {
 }
 
 type tilemap struct {
-	subject  Map
-	tilesets map[string]image.Image
+	subject Map
 }
 
 type subImager interface {
@@ -57,18 +56,6 @@ func (t tilemap) renderBackground(r fullRenderer) {
 }
 
 func (t *tilemap) renderLayer(r fullRenderer) error {
-	for _, tileset := range t.subject.Tilesets {
-		path := tileset.Image.Source
-
-		tileset, err := r.loader.LocateResource(filepath.Clean(t.subject.filename + path))
-
-		if err != nil {
-			return err
-		}
-
-		t.tilesets[path] = tileset
-	}
-
 	for _, l := range t.subject.Layers {
 		if !l.IsVisible() {
 			continue
@@ -89,8 +76,8 @@ func (t *tilemap) renderLayer(r fullRenderer) error {
 			tx *= t.subject.TileWidth
 			ty *= t.subject.TileHeight
 
-			tilesetgfx, found := t.tilesets[tileset.Image.Source]
-			if !found {
+			tilesetgfx, err := r.loader.LocateResource(filepath.Clean(t.subject.filename + tileset.Image.Source))
+			if err != nil {
 				panic("invalid tileset path")
 			}
 
