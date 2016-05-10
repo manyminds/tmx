@@ -3,8 +3,6 @@ package tmx
 import (
 	"image"
 	"path/filepath"
-
-	"github.com/disintegration/imaging"
 )
 
 //Renderer renders
@@ -17,6 +15,7 @@ type fullRenderer struct {
 	canvas Canvas
 	m      Map
 	loader ResourceLocator
+	tf     TileFlipper
 }
 
 //NewRenderer lets you draw the map on a custom canvas
@@ -27,7 +26,18 @@ func NewRenderer(m Map, c Canvas) Renderer {
 
 //NewRendererWithResourceLocator return a new renderer
 func NewRendererWithResourceLocator(m Map, c Canvas, locator ResourceLocator) Renderer {
-	return &fullRenderer{m: m, canvas: c, loader: locator}
+	return NewRendererWithResourceLocatorAndTileFlipper(m, c, locator, &imagingFlipper{})
+}
+
+//NewRendererWithResourceLocatorAndTileFlipper allows you to specify
+//a custom canvas, locator and TileFlipper
+func NewRendererWithResourceLocatorAndTileFlipper(
+	m Map,
+	c Canvas,
+	locator ResourceLocator,
+	tf TileFlipper,
+) Renderer {
+	return &fullRenderer{m: m, canvas: c, loader: locator, tf: tf}
 }
 
 //Render will generate a preview image of the tmx map provided
@@ -90,15 +100,15 @@ func (t *tilemap) renderLayer(r fullRenderer) error {
 			tile := ptileset.SubImage(tileBounds)
 
 			if dt.DiagonalFlip {
-				tile = imaging.FlipH(imaging.Rotate270(tile))
+				tile = r.tf.FlipDiagonal(tile)
 			}
 
 			if dt.HorizontalFlip {
-				tile = imaging.FlipH(tile)
+				tile = r.tf.FlipHorizontal(tile)
 			}
 
 			if dt.VerticalFlip {
-				tile = imaging.FlipV(tile)
+				tile = r.tf.FlipVertical(tile)
 			}
 
 			x := (i % l.Width) * t.subject.TileWidth
