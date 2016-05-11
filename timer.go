@@ -2,14 +2,23 @@ package tmx
 
 import "time"
 
-// Timer can be used to calculate
+// timer can be used to calculate
 // timestamp difference between GetElapsedTime and UpdateTime
 type timer struct {
 	beforeTime int64
 	afterTime  int64
 }
 
-func createTimer() *timer {
+//Timer can be used to measure time delta between
+//two snapshots
+type Timer interface {
+	GetElapsedTime() int64
+	Start()
+	UpdateTime()
+}
+
+//CreateTimer creates a new timer
+func CreateTimer() Timer {
 	return &timer{}
 }
 

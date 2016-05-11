@@ -5,6 +5,7 @@ import (
 	"image/color"
 	"image/draw"
 	"log"
+	"math"
 	"os"
 	"runtime"
 	"time"
@@ -140,8 +141,11 @@ func main() {
 	renderer := tmx.NewRenderer(*m, canvas)
 	fps := 0
 	startTime := time.Now().UnixNano()
+	timer := tmx.CreateTimer()
+	timer.Start()
 	for !window.ShouldClose() {
-		renderer.Render()
+		elapsed := float64(timer.GetElapsedTime()) / (1000 * 1000)
+		renderer.Render(int64(math.Ceil(elapsed)))
 		fps++
 		if time.Now().UnixNano()-startTime > 1000*1000*1000 {
 			log.Println(fps)
@@ -151,6 +155,7 @@ func main() {
 
 		window.SwapBuffers()
 		glfw.PollEvents()
+		timer.UpdateTime()
 	}
 }
 

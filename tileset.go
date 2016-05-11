@@ -97,7 +97,7 @@ func (a *Animation) Update(elapsedTime int64) {
 			a.currentFrame = 0
 		}
 
-		for a.animationTime >= a.GetFrame().endTime {
+		for a.animationTime > a.GetFrame().endTime {
 			a.currentFrame++
 		}
 	}

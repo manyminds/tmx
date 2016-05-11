@@ -8,8 +8,10 @@ import (
 
 //Renderer renders
 //the given Map on a provided Canvas
+//elapsedTime in milliseconds
+//this is necessary to update animated tiles accordingly
 type Renderer interface {
-	Render() error
+	Render(elapsedTime int64) error
 }
 
 type fullRenderer struct {
@@ -66,22 +68,18 @@ func NewRendererWithResourceLocatorAndTileFlipper(
 	locator ResourceLocator,
 	tf TileFlipper,
 ) Renderer {
-	t := createTimer()
-	t.Start()
-	return &fullRenderer{m: m, canvas: c, loader: locator, tf: tf, timer: t}
+	return &fullRenderer{m: m, canvas: c, loader: locator, tf: tf}
 }
 
 //Render will generate a preview image of the tmx map provided
-func (r *fullRenderer) Render() error {
-	elapsed := r.timer.GetElapsedTime() / (1000 * 1000)
+func (r *fullRenderer) Render(elapsedTime int64) error {
 	canvas := tilemap{subject: r.m}
 	canvas.renderBackground(r)
-	canvas.updateIdentities(elapsed)
+	canvas.updateIdentities(elapsedTime)
 	err := canvas.renderLayer(r)
 	if err != nil {
 		return err
 	}
-	r.timer.UpdateTime()
 
 	return nil
 }
