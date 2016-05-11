@@ -20,7 +20,7 @@ type ImageCanvas interface {
 
 //RelativeCanvas allows custom cropping of tiles
 type RelativeCanvas interface {
-	Draw(tile image.Rectangle, where image.Rectangle, tileset string)
+	Draw(tile image.Rectangle, where image.Rectangle, f FlipMode, tileset string)
 }
 
 //ImgCanvas is a sample renderer that renders

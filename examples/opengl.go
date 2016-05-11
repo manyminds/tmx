@@ -35,7 +35,7 @@ type openGLCanvas struct {
 	scaleY        float32
 }
 
-func (o *openGLCanvas) Draw(tile image.Rectangle, where image.Rectangle, tileset string) {
+func (o *openGLCanvas) Draw(tile image.Rectangle, where image.Rectangle, f tmx.FlipMode, tileset string) {
 	if _, ok := o.sets[tileset]; !ok {
 		o.sets[tileset] = newChipset(tileset, tile.Max.X-tile.Min.X)
 	}

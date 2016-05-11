@@ -20,6 +20,33 @@ type fullRenderer struct {
 	timer  *timer
 }
 
+//FlipMode gives the mode to flip
+type FlipMode uint8
+
+func (f FlipMode) String() string {
+	switch f {
+	case FlipDiagonal:
+		return "Diagonal"
+	case FlipHorizontal:
+		return "Horizontal"
+	case FlipVertical:
+		return "Vertical"
+	default:
+		return "None"
+	}
+}
+
+const (
+	//FlipDiagonal if the tile is diagonally flipped
+	FlipDiagonal FlipMode = iota
+	//FlipHorizontal if the tile is horizontally flipped
+	FlipHorizontal
+	//FlipVertical if the tile is vertically flipped
+	FlipVertical
+	//FlipNone if the tile is not flipped
+	FlipNone
+)
+
 //NewRenderer lets you draw the map on a custom canvas
 //with a default FilesystemLocator
 func NewRenderer(m Map, c Canvas) Renderer {
@@ -117,9 +144,26 @@ func (t *tilemap) renderLayer(r *fullRenderer) error {
 
 			bounds := image.Rect(x, y, x+t.subject.TileWidth, y+t.subject.TileWidth)
 
+			flipMode := FlipNone
+			if dt.DiagonalFlip {
+				flipMode = FlipDiagonal
+			}
+
+			if dt.HorizontalFlip {
+				flipMode = FlipHorizontal
+			}
+
+			if dt.VerticalFlip {
+				flipMode = FlipVertical
+			}
+
 			if relativeCanvas, ok := r.canvas.(RelativeCanvas); ok {
-				relativeCanvas.Draw(tileBounds, bounds, tileset.GetFilename())
-			} else if imgCanvas, ok := r.canvas.(ImageCanvas); ok {
+				relativeCanvas.Draw(tileBounds, bounds, flipMode, tileset.GetFilename())
+				continue
+			}
+
+			//Legacy mode, draw images directly
+			if imgCanvas, ok := r.canvas.(ImageCanvas); ok {
 				tilesetgfx, err := r.loader.LocateResource(filepath.Clean(t.subject.filename + tileset.Image.Source))
 				if err != nil {
 					return errors.New("invalid tileset path")
