@@ -1,5 +1,13 @@
 package main
 
+/*
+ * Disclaimer:
+ * this is just exemplary code
+ * please do not use this for anything
+ * I have no clue of opengl
+ * this code also has many issues and open bugs
+ */
+
 import (
 	"image"
 	"image/color"
@@ -75,7 +83,7 @@ func (o *openGLCanvas) Draw(tile image.Rectangle, where image.Rectangle, f tmx.F
 }
 
 func (o openGLCanvas) FillRect(what color.Color, where image.Rectangle) {
-	return
+	return //this does not work at all... makes the whole image red
 	drawX := float32(where.Min.X) * o.scaleX
 	drawY := float32(where.Min.Y) * o.scaleY
 	endX := float32(where.Max.X) * o.scaleX
