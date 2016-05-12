@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="5" height="10" tilewidth="16" tileheight="16" nextobjectid="1">
+ <tileset firstgid="1" name="chipset" tilewidth="16" tileheight="16" tilecount="20" columns="2">
+  <image source="../examples/chipset.png" width="32" height="160"/>
+ </tileset>
+ <layer name="Kachelebene 1" width="5" height="10">
+  <data encoding="base64">
+   CQAAAAMAAAAMAAAADAAAAAsAAAABAAAACQAAAAwAAAAMAAAACwAAAAEAAAABAAAACQAAAAMAAAALAAAAAQAAAAEAAAABAAAADAAAAAsAAAABAAAAAQAAAAEAAAAMAAAACwAAAAEAAAABAAAAAQAAAAwAAAALAAAAAQAAAAEAAAABAAAADAAAAAsAAAABAAAAAQAAAAEAAAAMAAAACwAAAAEAAAABAAAAAQAAAAwAAAALAAAAAQAAAAEAAAABAAAADAAAAAsAAAA=
+  </data>
+ </layer>
+</map>

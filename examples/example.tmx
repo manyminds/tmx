@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="40" height="40" tilewidth="16" tileheight="16" backgroundcolor="#ff515a" nextobjectid="6">
+ <tileset firstgid="1" name="chipset" tilewidth="16" tileheight="16" tilecount="20" columns="2">
+  <image source="chipset.png" width="32" height="160"/>
+  <tile id="12">
+   <animation>
+    <frame tileid="10" duration="100"/>
+    <frame tileid="11" duration="100"/>
+    <frame tileid="2" duration="100"/>
+   </animation>
+  </tile>
+  <tile id="16">
+   <animation>
+    <frame tileid="12" duration="100"/>
+    <frame tileid="14" duration="100"/>
+    <frame tileid="12" duration="100"/>
+    <frame tileid="14" duration="100"/>
+   </animation>
+  </tile>
+ </tileset>
+ <layer name="Kachelebene 1" width="40" height="40">
+  <data encoding="base64" compression="zlib">
+   eJzt14sJgCAUQNFXoETQjo3WKI2WUYH0QY1SsxtcBCM6iITVIlK/XOWRMnVWep2fn7+68JXhy33//d3nY9z72sx92zw+fPiOviayz2VM/f0r3SeJjfjw4cOH75u+pzLv6dUyDqYxN9/dNUz9fxTqi30+dRltnz65T0REFNIEYIcQJA==
+  </data>
+ </layer>
+ <layer name="Kachelebene 2" width="40" height="40">
+  <data encoding="base64" compression="zlib">
+   eJzt1UEKwDAIRFGbG3j/y7abwCBSKC1W4T8QMdkMyUKz/o6rltSeu9BM2ruI76Zzd2T8Bhmf8WR2OY/31bJ8Wf/LhHzxP+9mAEAN9u87E/KxfwEAAFDtBA+JAxA=
+  </data>
+ </layer>
+ <objectgroup name="Objektebene 1">
+  <object id="4" name="NPC" x="295" y="304"/>
+ </objectgroup>
+</map>

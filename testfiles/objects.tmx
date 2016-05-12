@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="1" height="1" tilewidth="16" tileheight="16" nextobjectid="14">
+ <tileset firstgid="1" name="chipset" tilewidth="16" tileheight="16" tilecount="20" columns="2">
+  <image source="../examples/chipset.png" width="32" height="160"/>
+  <tile id="12">
+   <animation>
+    <frame tileid="10" duration="100"/>
+    <frame tileid="11" duration="100"/>
+    <frame tileid="2" duration="100"/>
+   </animation>
+  </tile>
+  <tile id="16">
+   <animation>
+    <frame tileid="12" duration="100"/>
+    <frame tileid="14" duration="100"/>
+    <frame tileid="12" duration="100"/>
+    <frame tileid="14" duration="100"/>
+   </animation>
+  </tile>
+ </tileset>
+ <layer name="Kachelebene 1" width="1" height="1">
+  <data encoding="base64" compression="zlib">
+   eJzjZGBgAAAAKAAK
+  </data>
+ </layer>
+ <objectgroup name="Objektebene 1">
+  <object id="9" x="1.2499" y="1.04158">
+   <polygon points="0,0 0,4.79127 3.12474,4.79127 3.33306,0.208316"/>
+  </object>
+  <object id="10" x="7.91601" y="1.2499">
+   <polygon points="0,0 0.416632,4.37464 6.4578,0.208316"/>
+  </object>
+  <object id="11" x="14.3738" y="13.7489">
+   <polygon points="0,0 -6.66611,-2.08316 -0.208316,-6.66611"/>
+  </object>
+  <object id="12" x="0.416632" y="9.1659" visible="0">
+   <polygon points="0,0 1.2499,5.2079 9.1659,4.99958"/>
+  </object>
+ </objectgroup>
+</map>
