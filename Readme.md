@@ -46,6 +46,7 @@ To generate a preview image of your tilemap you can use the Render function:
       log.Fatal(err)
     }
   }
+  defer target.Close()
 
   err = png.Encode(target, canvas.Image())
   if err != nil {
