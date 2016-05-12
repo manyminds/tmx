@@ -22,6 +22,24 @@ var _ = Describe("Test public renderer", func() {
 			renderer := NewRenderer(*testMap, c)
 			err = renderer.Render(elapsedTime)
 			Expect(err).ToNot(HaveOccurred())
+			//			this code generates reference images if necessary
+			/*
+			 *
+			 *      target, err := os.Create(imageFile)
+			 *      if err != nil {
+			 *        target, err = os.Open(imageFile)
+			 *        if err != nil {
+			 *          log.Fatal(err)
+			 *        }
+			 *      }
+			 *      defer target.Close()
+			 *
+			 *      err = png.Encode(target, c.Image())
+			 *      if err != nil {
+			 *        log.Fatal(err)
+			 *      }
+			 *
+			 */
 			f, err = os.Open(imageFile)
 			Expect(err).ToNot(HaveOccurred())
 			expected, err := png.Decode(f)
@@ -35,6 +53,10 @@ var _ = Describe("Test public renderer", func() {
 
 		It("should render only visible images zlib", func() {
 			validateMapWithImage("./testfiles/simple_example_zlib.tmx", "./testfiles/simple_example_zlib_expected.png", 0)
+		})
+
+		It("should render non squared uncompressed maps", func() {
+			validateMapWithImage("./testfiles/uncompressed_not_square.tmx", "./testfiles/uncompressed_not_square.png", 0)
 		})
 
 		It("renders animated tiles", func() {

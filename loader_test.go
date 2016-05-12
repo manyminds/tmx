@@ -55,6 +55,36 @@ var _ = Describe("Loader", func() {
 		})
 	})
 
+	Context("Load TMX Files with objects", func() {
+		It("Objects tilemap", func() {
+			testfile := "testfiles/objects.tmx"
+			file, err := os.Open(testfile)
+			Expect(err).ToNot(HaveOccurred())
+			defer file.Close()
+
+			target, err := NewMap(file)
+			Expect(err).ToNot(HaveOccurred())
+
+			Expect(target.ObjectGroups).To(HaveLen(1))
+
+			objectGroup := target.ObjectGroups[0]
+			Expect(objectGroup.IsVisible()).To(Equal(true))
+			Expect(objectGroup.Objects).To(HaveLen(4))
+			countVisible := 0
+			countInvisible := 0
+			for _, o := range objectGroup.Objects {
+				if o.IsVisible() {
+					countVisible++
+				} else {
+					countInvisible++
+				}
+			}
+
+			Expect(countVisible).To(Equal(3))
+			Expect(countInvisible).To(Equal(1))
+		})
+	})
+
 	Context("Load TMX Files", func() {
 		It("Should load a simple valid file", func() {
 			testfile := "testfiles/simple_example.tmx"
@@ -85,6 +115,7 @@ var _ = Describe("Loader", func() {
 			//such as custom propertys
 			//or animations
 			Expect(tileSet.Tiles).To(HaveLen(2))
+			Expect(tileSet.GetFilename()).To(Equal("chipset.png"))
 
 			image := tileSet.Image
 			Expect(image.Source).To(Equal("chipset.png"))
@@ -124,6 +155,7 @@ var _ = Describe("Loader", func() {
 		Expect(target.Tilesets).To(HaveLen(1))
 		tileset := target.Tilesets[0]
 		Expect(tileset.Tiles).To(HaveLen(1))
+		Expect(tileset.GetFilename()).To(Equal("chipset.png"))
 		tile := tileset.Tiles[0]
 		Expect(tile.Animation.Frames).To(HaveLen(4))
 		for _, t := range tile.Animation.Frames {
