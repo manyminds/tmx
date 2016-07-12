@@ -3,7 +3,7 @@
 [![GoDoc](https://godoc.org/github.com/manyminds/tmx?status.svg)](https://godoc.org/github.com/manyminds/tmx)
 [![Build Status](https://travis-ci.org/manyminds/tmx.svg?branch=master)](https://travis-ci.org/manyminds/tmx) 
 [![Coverage Status](https://coveralls.io/repos/manyminds/tmx/badge.svg?branch=master&service=github)](https://coveralls.io/github/manyminds/tmx?branch=master) 
-[![Go Report Card](http://goreportcard.com/badge/manyminds/tmx)](http://goreportcard.com/report/manyminds/tmx)
+[![Go Report Card](https://goreportcard.com/badge/manyminds/tmx)](https://goreportcard.com/report/manyminds/tmx)
 # TMX Map File Loader
 
 This repository aims to provide go support for maps that are saved according the the [TMX Map Format](http://doc.mapeditor.org/reference/tmx-map-format)
